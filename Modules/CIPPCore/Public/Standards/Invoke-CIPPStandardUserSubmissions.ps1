@@ -30,6 +30,7 @@ function Invoke-CIPPStandardUserSubmissions {
     #>
 
     param($Tenant, $Settings)
+    Test-CIPPStandardLicense -StandardName 'UserSubmissions' -TenantFilter $Tenant -RequiredCapabilities @('EXCHANGE_S_STANDARD', 'EXCHANGE_S_ENTERPRISE', 'EXCHANGE_LITE') #No Foundation because that does not allow powershell access
     ##$Rerun -Type Standard -Tenant $Tenant -Settings $Settings 'UserSubmissions'
 
     # Get state value using null-coalescing operator
@@ -196,6 +197,8 @@ function Invoke-CIPPStandardUserSubmissions {
         if ($StateIsCorrect) {
             $FieldValue = $true
         } else {
+            $PolicyState = $PolicyState | Select-Object EnableReportToMicrosoft, ReportJunkToCustomizedAddress, ReportNotJunkToCustomizedAddress, ReportPhishToCustomizedAddress, ReportJunkAddresses, ReportNotJunkAddresses, ReportPhishAddresses
+            $RuleState = $RuleState | Select-Object State, SentTo
             $FieldValue = @{ PolicyState = $PolicyState; RuleState = $RuleState }
         }
 
